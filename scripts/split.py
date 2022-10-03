@@ -93,21 +93,21 @@ test = pd.concat([test_public, test_private])
 # save to tsv
 train_columns_name = ['user_index', 'place_index', 'rating', 'publish_time', 'review_text']
 train = train[train_columns_name].reset_index(drop=True)
-train.to_csv('./competition-data/train.tsv', sep='\t')
+train.to_csv('./competition-data/train.tsv', sep='\t', index=False)
 
 train_columns_name = ['user_index', 'place_index', 'rating', 'publish_time', 'review_text']
 complement_review_df = complement_review_df[train_columns_name].reset_index(drop=True)
-complement_review_df.to_csv('./competition-data/train_complement.tsv', sep='\t')
+complement_review_df.to_csv('./competition-data/train_complement.tsv', sep='\t', index=False)
 
 test_columns_name = ['user_index', 'place_index', 'publish_time', 'rating']
 test_public = test_public[test_columns_name].reset_index(drop=True)
-test_public.to_csv('./competition-data/test_leaderboard.tsv', sep='\t')
+test_public.to_csv('./competition-data/test_leaderboard.tsv', sep='\t', index=False)
 
 test_private = test_private[test_columns_name].reset_index(drop=True)
-test_private.to_csv('./competition-data/test_private.tsv', sep='\t')
+test_private.to_csv('./competition-data/test_private.tsv', sep='\t', index=False)
 
 restaurant_columns_name = ['place_index', 'name', 'category', 'related_categories', 'description',
                            'priceRange', 'address', 'rating', 'reviews', 'menu', 'open_hours',
                            'domain', 'popular_times', 'is_food_and_beverage', 'reviews_tags']
 restaurant_df = restaurant_df[restaurant_columns_name].reset_index(drop=True)
-restaurant_df.to_csv('./competition-data/restaurant.tsv', sep='\t')
+restaurant_df.to_csv('./competition-data/restaurant.tsv', sep='\t', index=False)
