@@ -22,8 +22,11 @@ complement_review_df = review_df[review_df.groupby('user_profile')['user_profile
 review_df = review_df[review_df.groupby('user_profile')['user_profile'].transform('size') >= 10]
 
 user_list = review_df['user_profile'].unique()
-complement_user_list = complement_review_df['user_profile'].unique()
 place_list = review_df['place_id'].unique()
+
+# Complement data contains restaurants that only exist in main trianing data, but more user reviews
+complement_review_df = complement_review_df[complement_review_df['place_id'].isin(place_list)]
+complement_user_list = complement_review_df['user_profile'].unique()
 
 # user_map: user_profile -> user_index
 user_map = {}
@@ -78,7 +81,7 @@ place_list = train['place_index'].unique()
 test_public = test_public[test_public['place_index'].isin(place_list)]
 test_private = test_private[test_private['place_index'].isin(place_list)]
 restaurant_df = restaurant_df[restaurant_df['place_index'].isin(place_list)]
-complement_review_df = complement_review_df[complement_review_df['place_idnex'].isin(place_list)]
+complement_review_df = complement_review_df[complement_review_df['place_index'].isin(place_list)]
 
 print('the length of train is ' + str(len(train)))
 print('the length of test_public is ' + str(len(test_public)))
@@ -96,13 +99,12 @@ train_columns_name = ['user_index', 'place_index', 'rating', 'publish_time', 're
 complement_review_df = complement_review_df[train_columns_name].reset_index(drop=True)
 complement_review_df.to_csv('./competition-data/train_complement.tsv', sep='\t')
 
-test_columns_name = ['user_index', 'place_index', 'rating', 'publish_time', 'review_text']
-test = test[test_columns_name].reset_index(drop=True)
-test.to_csv('./competition-data/test_with_rating.tsv', sep='\t')
+test_columns_name = ['user_index', 'place_index', 'publish_time', 'rating']
+test_public = test_public[test_columns_name].reset_index(drop=True)
+test_public.to_csv('./competition-data/test_leaderboard.tsv', sep='\t')
 
-test_columns_name = ['user_index', 'place_index', 'publish_time', 'review_text']
-test = test[test_columns_name].reset_index(drop=True)
-test.to_csv('./competition-data/test.tsv', sep='\t')
+test_private = test_private[test_columns_name].reset_index(drop=True)
+test_private.to_csv('./competition-data/test_private.tsv', sep='\t')
 
 restaurant_columns_name = ['place_index', 'name', 'category', 'related_categories', 'description',
                            'priceRange', 'address', 'rating', 'reviews', 'menu', 'open_hours',
