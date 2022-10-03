@@ -3,22 +3,24 @@ import pandas as pd
 
 # read data
 review_columns = ['user_profile', 'place_id', 'rating', 'publish_time', 'review_text']
-review_df = pd.read_csv("./data/dropna_reviews.tsv", sep="\t")[review_columns]
+review_df = pd.read_csv("./data/reviews.tsv", sep="\t")[review_columns]
 
-restaurant_columns = ['place_id', 'name', 'category', 'related_categories', 'description', 'priceRange', 'address', 'rating', 
-                      'reviews', 'menu', 'open_hours', 'domain', 'popular_times', 'is_food_and_beverage', 'reviews_tags']
+restaurant_columns = ['place_id', 'name', 'category', 'related_categories', 'description', 'priceRange', 'address',
+                      'rating',
+                      'reviews', 'menu', 'open_hours', 'domain', 'popular_times', 'is_food_and_beverage',
+                      'reviews_tags']
 restaurant_df = pd.read_csv("./data/restaurants.tsv", sep="\t")[restaurant_columns]
 
 # shuffle review_df
 review_df = review_df.sample(frac=1)
 
 # only keep users that have more than 10 reviews
-review_df = review_df[review_df.groupby('user_profile')['user_profile'].transform('size') > 9]
+review_df = review_df[review_df.groupby('user_profile')['user_profile'].transform('size') >= 10]
 
 # only keep places that have more than 20 reviews
-review_df = review_df[review_df.groupby('place_id')['place_id'].transform('size') > 19]
+review_df = review_df[review_df.groupby('place_id')['place_id'].transform('size') >= 20]
 
-user_list= review_df['user_profile'].unique()
+user_list = review_df['user_profile'].unique()
 place_list = review_df['place_id'].unique()
 
 # user_map: user_profile -> user_index
@@ -57,14 +59,15 @@ for i, row in review_df.iterrows():
         review_df.loc[i, 'dataset'] = 2
         continue
 
-train = review_df[review_df['dataset']==0]
-test_public = review_df[review_df['dataset']==1]
-test_private = review_df[review_df['dataset']==2]
+train = review_df[review_df['dataset'] == 0]
+test_public = review_df[review_df['dataset'] == 1]
+test_private = review_df[review_df['dataset'] == 2]
 
 # remove place that is not in the train set
 place_list = train['place_index'].unique()
 test_public = test_public[test_public['place_index'].isin(place_list)]
 test_private = test_private[test_private['place_index'].isin(place_list)]
+restaurant_df = restaurant_df[restaurant_df['place_index'].isin(place_list)]
 
 print('the length of train is ' + str(len(train)))
 print('the length of test_public is ' + str(len(test_public)))
@@ -85,8 +88,8 @@ test_columns_name = ['user_index', 'place_index', 'publish_time', 'review_text']
 test = test[test_columns_name].reset_index(drop=True)
 test.to_csv('./competition-data/test.tsv', sep='\t')
 
-restaurant_columns_name = ['place_index', 'name', 'category', 'related_categories', 'description', 
-                           'priceRange', 'address', 'rating', 'reviews', 'menu', 'open_hours', 
+restaurant_columns_name = ['place_index', 'name', 'category', 'related_categories', 'description',
+                           'priceRange', 'address', 'rating', 'reviews', 'menu', 'open_hours',
                            'domain', 'popular_times', 'is_food_and_beverage', 'reviews_tags']
 restaurant_df = restaurant_df[restaurant_columns_name].reset_index(drop=True)
 restaurant_df.to_csv('./competition-data/restaurant.tsv', sep='\t')
