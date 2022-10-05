@@ -21,6 +21,19 @@ review_count = train_data.groupby('user_index')['user_index'].transform('size')
 min_count, max_count, average_count = review_count.min(), review_count.max(), review_count.mean()
 print(f"review per user, min-max-average: {min_count}-{max_count}-{average_count}")
 
+# user index should be continuos
+user_count = len(train_data['user_index'].unique())
+max_user_index = train_data['user_index'].max()
+assert user_count == max_user_index + 1, \
+    f"user index is not continuous: {user_count} users, max index {max_user_index}"
+
+# restaurant index should be continuous
+place_count = len(train_data['place_index'].unique())
+max_place_index = train_data['place_index'].max()
+
+assert place_count == max_place_index + 1, \
+    f"place index is not continuous: {place_count} place, max index {max_place_index}"
+
 # users and restaurants in test should have appeared in training data
 test_data_leader_board = pd.read_csv('./competition-data/test_leaderboard.tsv', sep='\t')
 users_in_test_data = test_data_leader_board['user_index'].unique()
