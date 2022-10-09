@@ -104,7 +104,7 @@ complement_review_df.to_csv('./competition-data/train_complement.tsv', sep='\t',
 test_columns_name = ['user_index', 'place_index', 'publish_time', 'rating']
 test_public = test_public[test_columns_name].reset_index(drop=True)
 test_public.to_csv('./competition-data/test_leaderboard.tsv', sep='\t', index=False)
-test_public.drop(['rating'], axis=1).to_csv('./competition-data/test_leaderboard_wo_rating.tsv', sep='\t', index=False)
+test_public.drop(['rating'], axis=1).to_csv('./competition-data/test_leaderboard-input.tsv', sep='\t', index=False)
 
 test_private = test_private[test_columns_name].reset_index(drop=True)
 test_private.to_csv('./competition-data/test_private.tsv', sep='\t', index=False)
